@@ -140,7 +140,7 @@
 })(jQuery);
 
 var Visualizer = (function ($) {
-  var CANVAS_SIZE = 1600;
+  var CANVAS_SIZE = 960;
 
   var MAX_CELL_SIZE = 47;
 
