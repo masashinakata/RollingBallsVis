@@ -584,6 +584,8 @@ var Visualizer = (function ($) {
       });
     }
 
+    var TARGET_BORDER_WIDTH = 3;
+
     function draw_target() {
       var H = this.H, W = this.W;
 
@@ -593,7 +595,7 @@ var Visualizer = (function ($) {
 	var board  = this.board;
 	var target = this.target;
 
-	context.setLineWidth(3);
+	context.setLineWidth(TARGET_BORDER_WIDTH);
 
 	for (var i = 0; i < H; i ++)
 	  for (var j = 0; j < W; j ++) {
