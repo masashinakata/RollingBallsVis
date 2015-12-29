@@ -1215,7 +1215,7 @@ var Visualizer = (function ($) {
 	    console.log(d);
 
 	    if (region == 'L') {
-	      if (d > dp * 0.75) {
+	      if (d > dp * DRAGGING_THRESHOLD) {
 		if (this.step == 0) {
 		  this.draw();
 		}
@@ -1229,7 +1229,7 @@ var Visualizer = (function ($) {
 	      }
 	    }
 	    else if (region == 'R') {
-	      if (d > dp * 0.75) {
+	      if (d > dp * DRAGGING_THRESHOLD) {
 		if (this.step == this.result.length) {
 		  this.draw();
 		}
