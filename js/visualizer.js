@@ -617,6 +617,8 @@ var Visualizer = (function ($) {
       });
     }
 
+    var RADIUS_THRESHOLD = 0.2;
+
     function region_from_offset() {
       var ox = this.dragging.ox / this.scale;
       var oy = this.dragging.oy / this.scale;
@@ -627,7 +629,7 @@ var Visualizer = (function ($) {
 
       var region = '-';
 
-      if (radius > 0.2) {
+      if (radius > RADIUS_THRESHOLD) {
 	if (- Math.PI * 1 / 6 < theta && theta < Math.PI * 1 / 6) {
 	  region = 'R';
 	}
