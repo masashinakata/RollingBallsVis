@@ -1108,27 +1108,19 @@ var Visualizer = (function ($) {
 	      }
 	}
 
+	this.dragging.enabled = true;
+	this.dragging. x      =  x;
+	this.dragging. y      =  y;
+	this.dragging.ix      = ix;
+	this.dragging.iy      = iy;
+	this.dragging.ox      = 0;
+	this.dragging.oy      = 0;
+	this.dragging.c       = -1;
+
 	if ('0' <= c && c <= '9') {
-	  this.dragging.enabled = true;
-	  this.dragging. x      =  x;
-	  this.dragging. y      =  y;
-	  this.dragging.ix      = ix;
-	  this.dragging.iy      = iy;
-	  this.dragging.ox      = 0;
-	  this.dragging.oy      = 0;
 	  this.dragging.c       = c;
 
 	  this.draw();
-	}
-	else {
-	  this.dragging.enabled = true;
-	  this.dragging. x      =  x;
-	  this.dragging. y      =  y;
-	  this.dragging.ix      = ix;
-	  this.dragging.iy      = iy;
-	  this.dragging.ox      = 0;
-	  this.dragging.oy      = 0;
-	  this.dragging.c       = -1;
 	}
       }
       else if (ev == 'mousemove' || ev == 'touchmove') {
