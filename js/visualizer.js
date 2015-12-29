@@ -654,6 +654,15 @@ var Visualizer = (function ($) {
     var DRAGGING_NEXT_MOVE_OPACITY = 0.75;
     var DRAGGING_CANDIDATE_OPACITY = 0.2;
 
+    var DRAGGING_THRESHOLD = 0.75;
+
+    var DRAGGING_RADIUS = 4;
+
+    var DRAGGING_TRANSPARENCY = 0.333;
+
+    var DRAGGING_ACTIVE_TRANSPARENCY   = 0.5;
+    var DRAGGING_INACTIVE_TRANSPARENCY = 0.2;
+
     function draw_dragging() {
       if (! this.dragging.enabled)
 	return;
@@ -673,27 +682,22 @@ var Visualizer = (function ($) {
       scaled.call(this, function () {
 	var context = this.context;
 
-	if (this.dragging.c == -1)
+	if (c == -1) {
 	  context.matrixexec(this.dm, function () {
-	    var dx = this.S.x - this.E.x;
-	    var dy = this.S.y - this.E.y;
+	    var dx = this.E.x - this.S.x;
+	    var dy = this.E.y - this.S.y;
 
 	    var d = Math.sqrt(dx * dx + dy * dy);
 
 	    var dp = $('#canvas').width();
 
-	    var r = 4;
+	    context.setGray(0, DRAGGING_TRANSPARENCY);
 
-	    if (d > dp * 0.75) {
-	      context.setRGBColor(0.0, 0.0, 1.0, 0.5);
+	    context.setLineWidth(1);
 
-	      context.setLineWidth(3);
-	    }
-	    else {
-	      context.setGray(0, 0.333);
-	      
-	      context.setLineWidth(1);
-	    }
+	    if ('LR'.indexOf(region) >= 0)
+	      if (d > dp * DRAGGING_THRESHOLD)
+		context.setLineWidth(3);
 
 	    var p0, p1;
 
@@ -715,7 +719,7 @@ var Visualizer = (function ($) {
 
 	      var l = Math.sqrt(dx * dx + dy * dy);
 
-	      var a = Math.min(r * 3, l) / l;
+	      var a = Math.min(DRAGGING_RADIUS * 3, l) / l;
 
 	      context.moveTo(p0[0] + dx * a / 2, p0[1] + dy * a / 2);
 	      context.lineTo(p1[0] - dx * a / 2, p1[1] - dy * a / 2);
@@ -724,162 +728,164 @@ var Visualizer = (function ($) {
 	    }.bind(this));
 
 	    context.matrixexec(this.dm, function () {
-	      context.arc(p0[0], p0[1], r, 0, 360);
+	      context.arc(p0[0], p0[1], DRAGGING_RADIUS, 0, 360);
 
 	      context.fill();
 
-	      context.arc(p1[0], p1[1], r, 0, 360);
+	      context.arc(p1[0], p1[1], DRAGGING_RADIUS, 0, 360);
 
 	      context.fill();
 	    }.bind(this));
 	  }.bind(this));
+	}
+	else {
+	  context.moveTo(ix + 0.5, iy + 0.5);
 
-	context.moveTo(ix + 0.5, iy + 0.5);
+	  context.matrixexec(this.dm, function () {
+	    context.rmoveTo(ox, oy);
+	  }.bind(this));
 
-	context.matrixexec(this.dm, function () {
-	  context.rmoveTo(ox, oy);
-	}.bind(this));
+	  var p = context.currentPoint();
 
-	var p = context.currentPoint();
-
-	if (c >= 0)
 	  draw_ball.call(this, p[0], p[1], c, DRAGGING_OPACITY);
 
-	context.matrixexec(context.currentMatrix(), function () {
-	  context.translate(0.5, 0.5);
-	  
-	  var x = ix, y = iy, xx, yy;
+	  context.matrixexec(context.currentMatrix(), function () {
+	    context.translate(0.5, 0.5);
+	    
+	    var x = ix, y = iy, xx, yy;
 
-	  // left
+	    // left
 
-	  for ( ; x > 0; x = xx)
-	    if (this.board[y][xx = x - 1] != '.')
-	      break;
-	  
-	  if (x != ix) {
-	    if (region == 'L') {
-	      draw_ball.call(this, x, iy, c, DRAGGING_NEXT_MOVE_OPACITY);
-	    }
-	    else {
-	      draw_ball.call(this, x, iy, c, DRAGGING_CANDIDATE_OPACITY);
-	    }
+	    for ( ; x > 0; x = xx)
+	      if (this.board[y][xx = x - 1] != '.')
+		break;
 
-	    context.moveTo(ix, iy);
+	    if (x != ix) {
+	      if (region == 'L') {
+		draw_ball.call(this, x, iy, c, DRAGGING_NEXT_MOVE_OPACITY);
+	      }
+	      else {
+		draw_ball.call(this, x, iy, c, DRAGGING_CANDIDATE_OPACITY);
+	      }
 
-	    context.lineTo(x, iy);
+	      context.moveTo(ix, iy);
 
-	    if (region == 'L') {
-	      context.setGray(0, 0.5);
-	    }
-	    else {
-	      context.setGray(0, 0.2);
-	    }
+	      context.lineTo(x, iy);
 
-	    context.matrixexec(this.dm, function () {
-	      context.stroke();
-	    }.bind(this));
-	  }
+	      if (region == 'L') {
+		context.setGray(0, DRAGGING_ACTIVE_TRANSPARENCY);
+	      }
+	      else {
+		context.setGray(0, DRAGGING_INACTIVE_TRANSPARENCY);
+	      }
 
-	  // down
-
-	  x = ix; y = iy;
-
-	  for ( ; y < H - 1; y = yy)
-	    if (this.board[yy = y + 1][x] != '.')
-	      break;
-	  
-	  if (y != iy) {
-	    if (region == 'D') {
-	      draw_ball.call(this, ix, y, c, DRAGGING_NEXT_MOVE_OPACITY);
-	    }
-	    else {
-	      draw_ball.call(this, ix, y, c, DRAGGING_CANDIDATE_OPACITY);
+	      context.matrixexec(this.dm, function () {
+		context.stroke();
+	      }.bind(this));
 	    }
 
-	    context.moveTo(ix, iy);
+	    // down
 
-	    context.lineTo(ix, y);
+	    x = ix;
+	    y = iy;
 
-	    if (region == 'D') {
-	      context.setGray(0, 0.5);
-	    }
-	    else {
-	      context.setGray(0, 0.2);
-	    }
+	    for ( ; y < H - 1; y = yy)
+	      if (this.board[yy = y + 1][x] != '.')
+		break;
+	    
+	    if (y != iy) {
+	      if (region == 'D') {
+		draw_ball.call(this, ix, y, c, DRAGGING_NEXT_MOVE_OPACITY);
+	      }
+	      else {
+		draw_ball.call(this, ix, y, c, DRAGGING_CANDIDATE_OPACITY);
+	      }
 
-	    context.matrixexec(this.dm, function () {
-	      context.stroke();
-	    }.bind(this));
-	  }
+	      context.moveTo(ix, iy);
 
-	  // right
+	      context.lineTo(ix, y);
 
-	  x = ix; y = iy;
+	      if (region == 'D') {
+		context.setGray(0, DRAGGING_ACTIVE_TRANSPARENCY);
+	      }
+	      else {
+		context.setGray(0, DRAGGING_INACTIVE_TRANSPARENCY);
+	      }
 
-	  for ( ; x < W - 1; x = xx)
-	    if (this.board[y][xx = x + 1] != '.')
-	      break;
-	  
-	  if (x != ix) {
-	    if (region == 'R') {
-	      draw_ball.call(this, x, iy, c, DRAGGING_NEXT_MOVE_OPACITY);
-	    }
-	    else {
-	      draw_ball.call(this, x, iy, c, DRAGGING_CANDIDATE_OPACITY);
-	    }
-
-	    context.moveTo(ix, iy);
-
-	    context.lineTo(x, iy);
-
-	    if (region == 'R') {
-	      context.setGray(0, 0.5);
-	    }
-	    else {
-	      context.setGray(0, 0.2);
+	      context.matrixexec(this.dm, function () {
+		context.stroke();
+	      }.bind(this));
 	    }
 
-	    context.matrixexec(this.dm, function () {
-	      context.stroke();
-	    }.bind(this));
-	  }
+	    // right
 
-	  // up
+	    x = ix; y = iy;
 
-	  x = ix; y = iy;
+	    for ( ; x < W - 1; x = xx)
+	      if (this.board[y][xx = x + 1] != '.')
+		break;
+	    
+	    if (x != ix) {
+	      if (region == 'R') {
+		draw_ball.call(this, x, iy, c, DRAGGING_NEXT_MOVE_OPACITY);
+	      }
+	      else {
+		draw_ball.call(this, x, iy, c, DRAGGING_CANDIDATE_OPACITY);
+	      }
 
-	  for ( ; y > 0; y = yy)
-	    if (this.board[yy = y - 1][x] != '.')
-	      break;
-	  
-	  if (y != iy) {
-	    if (region == 'U') {
-	      draw_ball.call(this, ix, y, c, DRAGGING_NEXT_MOVE_OPACITY);
+	      context.moveTo(ix, iy);
+
+	      context.lineTo(x, iy);
+
+	      if (region == 'R') {
+		context.setGray(0, DRAGGING_ACTIVE_TRANSPARENCY);
+	      }
+	      else {
+		context.setGray(0, DRAGGING_INACTIVE_TRANSPARENCY);
+	      }
+
+	      context.matrixexec(this.dm, function () {
+		context.stroke();
+	      }.bind(this));
 	    }
-	    else {
-	      draw_ball.call(this, ix, y, c, DRAGGING_CANDIDATE_OPACITY);
+
+	    // up
+
+	    x = ix; y = iy;
+
+	    for ( ; y > 0; y = yy)
+	      if (this.board[yy = y - 1][x] != '.')
+		break;
+	    
+	    if (y != iy) {
+	      if (region == 'U') {
+		draw_ball.call(this, ix, y, c, DRAGGING_NEXT_MOVE_OPACITY);
+	      }
+	      else {
+		draw_ball.call(this, ix, y, c, DRAGGING_CANDIDATE_OPACITY);
+	      }
+
+	      context.moveTo(ix, iy);
+
+	      context.lineTo(ix, y);
+
+	      if (region == 'U') {
+		context.setGray(0, DRAGGING_ACTIVE_TRANSPARENCY);
+	      }
+	      else {
+		context.setGray(0, DRAGGING_INACTIVE_TRANSPARENCY);
+	      }
+
+	      context.matrixexec(this.dm, function () {
+		context.stroke();
+	      }.bind(this));
 	    }
+	  }.bind(this));
 
-	    context.moveTo(ix, iy);
+	  context.setGray(0);
 
-	    context.lineTo(ix, y);
-
-	    if (region == 'U') {
-	      context.setGray(0, 0.5);
-	    }
-	    else {
-	      context.setGray(0, 0.2);
-	    }
-
-	    context.matrixexec(this.dm, function () {
-	      context.stroke();
-	    }.bind(this));
-	  }
-	}.bind(this));
-
-	context.setGray(0);
-
-	context.setLineWidth(1);
+	  context.setLineWidth(1);
+	}
       });
     }
 
