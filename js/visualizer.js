@@ -1065,11 +1065,8 @@ var Visualizer = (function ($) {
       else if (ev == 'gestureend') {
       }
       else if (ev == 'mousedown' || ev == 'touchstart') {
-	this.S.x = x;
-	this.S.y = y;
-
-	var ix = Math.floor((x - 10) / this.scale);
-	var iy = Math.floor((y - 10) / this.scale);
+	var ix = dc2ndc.call(this, this.S.x = x);
+	var iy = dc2ndc.call(this, this.S.y = y);
 
 	var c = -1;
 
@@ -1146,8 +1143,8 @@ var Visualizer = (function ($) {
 	  this.draw();
 	}
 
-	var ix = Math.floor((x - 10) / this.scale);
-	var iy = Math.floor((y - 10) / this.scale);
+	var ix = dc2ndc.call(this, x);
+	var iy = dc2ndc.call(this, y);
 
 	$('#coord').text((ix + 1) + ', ' + (iy + 1));
       }
