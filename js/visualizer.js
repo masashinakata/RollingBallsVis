@@ -1203,8 +1203,6 @@ var Visualizer = (function ($) {
 
 	    var dp = $('#canvas').width();
 
-	    console.log(d);
-
 	    if (region == 'L') {
 	      if (d > dp * DRAGGING_THRESHOLD) {
 		if (this.step == 0) {
