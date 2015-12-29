@@ -1091,11 +1091,10 @@ var Visualizer = (function ($) {
 		    context.matrixexec(this.dm, function () {
 		      var p = context.currentPoint();
 
-		      console.log(p, x, y);
-		      
 		      var d = Math.pow(p[0] - x, 2) + Math.pow(p[1] - y, 2);
 
-		      console.log(j + ' ' + j + ' ' + d + '(' + dm + ')');
+		      if (false)
+			console.log(i + ' ' + j + ' ' + d + '(' + dm + ')');
 		      
 		      if (d < dm) {
 			dm = d;
