@@ -299,12 +299,14 @@ var Visualizer = (function ($) {
       });
     }
 
+    var BALL_BORDER_WIDTH = 2;
+
     function draw_ball(x, y, c, o) {
       var context = this.context;
 
       context.setGray(0, o);
 
-      context.setLineWidth(2);
+      context.setLineWidth(BALL_BORDER_WIDTH);
 
       var color = BALL_COLORS[c - '0'].slice();
 
@@ -410,7 +412,7 @@ var Visualizer = (function ($) {
 
 	context.setGray(0);
 
-	context.setLineWidth(2);
+	context.setLineWidth(BALL_BORDER_WIDTH);
 
 	for (var i = 0; i < H; i ++)
 	  for (var j = 0; j < W; j ++) {
@@ -471,7 +473,7 @@ var Visualizer = (function ($) {
 
 	context.setGray(0);
 
-	context.setLineWidth(2);
+	context.setLineWidth(BALL_BORDER_WIDTH);
 
 	for (var i = 0; i < H; i ++)
 	  for (var j = 0; j < W; j ++) {
