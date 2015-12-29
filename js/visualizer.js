@@ -486,7 +486,7 @@ var Visualizer = (function ($) {
 
 	    var c = board[i][j];
 
-	    if (c < '0' || c > '9')
+	    if (c < '0' || '9' < c)
 	      continue;
 
 	    var color = BALL_COLORS[c - '0'].slice();
@@ -599,7 +599,7 @@ var Visualizer = (function ($) {
 	  for (var j = 0; j < W; j ++) {
 	    var c = target[i][j];
 
-	    if (c < '0' || c > '9')
+	    if (c < '0' || '9' < c)
 	      continue;
 
             Context.prototype.setRGBColor.apply(context, BALL_COLORS[c - '0']);
