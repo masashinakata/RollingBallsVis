@@ -299,6 +299,34 @@ var Visualizer = (function ($) {
       });
     }
 
+    function draw_ball(x, y, c, o) {
+      var context = this.context;
+
+      context.setGray(0, o);
+
+      context.setLineWidth(2);
+
+      var color = BALL_COLORS[c - '0'].slice();
+
+      color.push(o);
+
+      Context.prototype.setRGBColor.apply(context, color);
+
+      context.arc(x, y, RADIUS, 0, 360);
+
+      context.fill();
+      
+      context.newPath();
+      
+      context.setGray(0, o);
+      
+      context.arc(x, y, RADIUS, 0, 360);
+      
+      context.matrixexec(this.dm, function () {
+	context.stroke();
+      }.bind(this));
+    }
+
     var GHOST_OPACITY = 0.1;
 
     function draw_ghosts() {
@@ -583,34 +611,6 @@ var Visualizer = (function ($) {
 
 	context.setLineWidth(1);
       });
-    }
-
-    function draw_ball(x, y, c, o) {
-      var context = this.context;
-
-      context.setGray(0, o);
-
-      context.setLineWidth(2);
-
-      var color = BALL_COLORS[c - '0'].slice();
-
-      color.push(o);
-
-      Context.prototype.setRGBColor.apply(context, color);
-
-      context.arc(x, y, RADIUS, 0, 360);
-
-      context.fill();
-      
-      context.newPath();
-      
-      context.setGray(0, o);
-      
-      context.arc(x, y, RADIUS, 0, 360);
-      
-      context.matrixexec(this.dm, function () {
-	context.stroke();
-      }.bind(this));
     }
 
     function region_from_offset() {
