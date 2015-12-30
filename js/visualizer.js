@@ -183,6 +183,8 @@ var Visualizer = (function ($) {
 
     this.dragging = { enabled: false, x: 0, y: 0, ox: 0, oy: 0, ix: 0, iy: 0, c: -1 };
 
+    document.title = "RollingBalls Visualizer(seed=" + seed + ")";
+
     $('#seed' ).text(this.seed = seed);
     $('#steps').text(this.step_string());
     $('#score').text(this.score_string());
